@@ -5,7 +5,10 @@
 #include <vector>
 #include <fstream>
 
-void InputMapper(std::ifstream& fin);
+#include "vehicle.h"
+#include "customer.h"
+
+void InputMapper(std::ifstream& fin, std::vector<Customer>& customers, std::vector<Vehicle>& vehicles, struct Warehouse& warehouse);
 double RouteVehicles();
 
 #endif

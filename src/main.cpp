@@ -16,10 +16,15 @@
 
 #include <iostream>
 #include <fstream>
-
 #include <time.h>
+#include <vector>
+
 
 #include "iolib.h"
+#include "lib.h"
+#include "vehicle.h"
+#include "customer.h"
+
 
 // Take arguments from command line
 int main(int argc, char* args[]) {
@@ -47,13 +52,18 @@ int main(int argc, char* args[]) {
         AssertInputFileOpenSuccess(fin.fail(), inputFile);
 
         // TODO: Map input data to proper data structure
+        std::vector<Customer> customers;
+        std::vector<Vehicle> vehicles;
+        struct Warehouse warehouse;
+        InputMapper(fin, customers, vehicles, warehouse);
 
         // TODO: Solve problem
 
         // Open the output file
         fout.open(outputFile.data());
 
-        // TODO: Output data
+        // Output data
+        fout << "";
 
         // Close the input & output files
         fin.close();
