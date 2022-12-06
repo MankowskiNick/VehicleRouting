@@ -7,8 +7,8 @@
 
 struct Warehouse
 {
-    int x;
-    int y;
+    double x;
+    double y;
 };
 
 class Customer {

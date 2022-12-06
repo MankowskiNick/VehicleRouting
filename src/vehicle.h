@@ -60,7 +60,7 @@ class Vehicle {
             return false;
         }
 
-        std::vector<int> GetCustomerIds() {
+        std::vector<int> GetCustomerIds() const {
             return std::vector<int>(customer_ids);
         }
 

@@ -9,6 +9,6 @@
 #include "customer.h"
 
 void InputMapper(std::ifstream& fin, std::vector<Customer>& customers, std::vector<Vehicle>& vehicles, struct Warehouse& warehouse);
-double RouteVehicles();
+double RouteVehicles(std::vector<Customer>& customers, std::vector<Vehicle>& vehicles, struct Warehouse& warehouse);
 
 #endif

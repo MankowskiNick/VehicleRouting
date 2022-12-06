@@ -58,12 +58,23 @@ int main(int argc, char* args[]) {
         InputMapper(fin, customers, vehicles, warehouse);
 
         // TODO: Solve problem
+        time_t start_time = time(NULL);
+        double result = RouteVehicles(customers, vehicles, warehouse);
+        std::cout << inputFile << "\n     -result=" << result << "\n     -time=" << time(NULL) - start_time << "\n\n";
 
         // Open the output file
         fout.open(outputFile.data());
 
         // Output data
-        fout << "";
+        fout << result << "\n";
+        for (int i = 0; i < vehicles.size(); i++) {
+            std::vector<int> customer_ids = vehicles[i].GetCustomerIds();
+            fout << 0 << " ";
+            for (int j = 0; j < customer_ids.size(); j++) {
+                fout << customer_ids[j] + 1 << " ";
+            }
+            fout << 0 << "\n";
+        }
 
         // Close the input & output files
         fin.close();
