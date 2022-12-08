@@ -29,8 +29,9 @@ if __name__ == '__main__':
     # Compile source
     if (os_name == "Windows"):
         subprocess.run("g++ -g src/verifier.cpp -o verifier.exe")
+        subprocess.run(command)
     else:
-        subprocess.run("g++ -g src/verifier.cpp -o verifier")
+        os.system("g++ -g src/verifier.cpp -o verifier")
+        os.system(command)
 
     # Run command
-    subprocess.run(command)

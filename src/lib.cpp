@@ -11,7 +11,7 @@
 #include "vehicle.h"
 
 #define GREEDY_TIME_MAX 6
-#define START_TEMP_SCALAR 500
+#define START_TEMP_SCALAR 5000
 #define TEMP_MIN 1
 #define GREEDY_SOLUTION 1 // depracated
 
