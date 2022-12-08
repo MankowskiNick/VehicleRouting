@@ -23,9 +23,6 @@ if __name__ == '__main__':
 
     # add files to commands
     project_path = os.path.realpath(os.path.dirname(__file__))
-    for i in range(0, len(inputs)):
-        command += "data/" + inputs[i] + " " + "data/" + outputs[i] + " "
-
     # Compile source
     if (os_name == "Windows"):
         subprocess.run("g++ -g src/verifier.cpp -o verifier.exe")
@@ -34,4 +31,8 @@ if __name__ == '__main__':
         os.system("g++ -g src/verifier.cpp -o verifier")
         os.system(command)
 
-    # Run command
+    for i in range(0, len(outputs)):
+        input_file = inputs[i]
+        output_file = outputs[i]
+        subprocess.run(command + "data/" + outputs[i] + " " + "data/" + inputs[i] + " ")
+    #subprocess.run("verifier.exe data/vrp_51_5_1 data/OUTPUT_vrp_51_5_1")

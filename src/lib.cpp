@@ -219,7 +219,7 @@ double GetGreedySolution(std::vector<Customer>& customers, std::vector<Vehicle>&
     */
 
    
-
+   /*
    time_t start_time = time(NULL);
     for (int i = 0; i < customers.size() && time(NULL) - start_time < GREEDY_TIME_MAX; i++) {
         for (int j = 0; j < vehicles.size() && time(NULL) - start_time < GREEDY_TIME_MAX; j++) {
@@ -236,7 +236,7 @@ double GetGreedySolution(std::vector<Customer>& customers, std::vector<Vehicle>&
             }
         }
     }
-    /*
+    
     if (time(NULL) - start_time > GREEDY_TIME_MAX) {
         std::vector<int> available_ids;
         for (int i = 0; i < customers.size(); i++ ) {
@@ -274,6 +274,12 @@ double GetGreedySolution(std::vector<Customer>& customers, std::vector<Vehicle>&
         }
     }
     */
+
+    // fix for 22_6_1, 26_8_1, 31_9_1, 41_14_1, 76_9_1
+    for (int i = 0; i < customers.size(); i++) {
+        MoveCustomer_Helper(customers, vehicles, i);
+    }
+    
 
     return ScoreSolution(customers, vehicles, warehouse);
 }
