@@ -68,10 +68,10 @@ class Vehicle {
             return capacity_left;
         }
 
+        std::vector<int> customer_ids;
     private:
         int id;
         double capacity_left;
-        std::vector<int> customer_ids;
 };
 
 #endif 

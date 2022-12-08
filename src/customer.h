@@ -21,6 +21,8 @@ class Customer {
             vehicle_id = -1;
         }
 
+        Customer() {}
+
         int Id() const {
             return id;
         }
@@ -51,6 +53,10 @@ class Customer {
 
         double GetDistTo(double to_x, double to_y) const {
             return sqrt(pow(x - to_x, 2) + pow(y - to_y, 2));
+        }
+
+        bool operator==(Customer& cust2) {
+            return Id() == cust2.Id();
         }
 
     private:
