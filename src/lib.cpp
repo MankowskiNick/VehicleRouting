@@ -11,10 +11,8 @@
 #include "vehicle.h"
 
 #define GREEDY_TIME_MAX 6
-#define START_TEMP_SCALAR 5000
+#define START_TEMP_SCALAR 10000
 #define TEMP_MIN 1
-#define GREEDY_SOLUTION 1 // depracated
-
 // Insert item into a vector at a given position
 template<typename T>
 bool InsertAtPosition(std::vector<T>& vect, T& add_item, int index) {
