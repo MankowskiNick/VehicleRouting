@@ -217,10 +217,9 @@ double GetGreedySolution(std::vector<Customer>& customers, std::vector<Vehicle>&
         }
     }
     */
-
-   
-   /*
-   time_t start_time = time(NULL);
+    
+    /*
+    time_t start_time = time(NULL);
     for (int i = 0; i < customers.size() && time(NULL) - start_time < GREEDY_TIME_MAX; i++) {
         for (int j = 0; j < vehicles.size() && time(NULL) - start_time < GREEDY_TIME_MAX; j++) {
             if (vehicles[j].AssignCustomer(customers[i]))
@@ -236,8 +235,9 @@ double GetGreedySolution(std::vector<Customer>& customers, std::vector<Vehicle>&
             }
         }
     }
+    */
     
-    if (time(NULL) - start_time > GREEDY_TIME_MAX) {
+    //if (time(NULL) - start_time > GREEDY_TIME_MAX) {
         std::vector<int> available_ids;
         for (int i = 0; i < customers.size(); i++ ) {
             available_ids.push_back( customers[i].Id() );
@@ -259,27 +259,21 @@ double GetGreedySolution(std::vector<Customer>& customers, std::vector<Vehicle>&
             QuickSort2<double, int>::Sort(distances_to_ids, ids);
 
             vehicles[i].AssignCustomer(customers[available_ids[0]]);
+            RemoveFromVector(available_ids, available_ids[0]);
             for (int j = 0; j < ids.size(); j++) {
                 int cust_id = ids[j];
                 if (vehicles[i].AssignCustomer(customers[cust_id])) {
                     RemoveFromVector(available_ids, cust_id);
                 }
             }
-            RemoveFromVector(available_ids, available_ids[0]);
         }
+    //}
 
-        for (int i = 0; i < available_ids.size(); i++) {
-            int vehicle_id = rand() % vehicles.size();
-            MoveCustomer_Helper(customers, vehicles, available_ids[i]);
-        }
-    }
-    */
-
-    // fix for 22_6_1, 26_8_1, 31_9_1, 41_14_1, 76_9_1
     for (int i = 0; i < customers.size(); i++) {
-        MoveCustomer_Helper(customers, vehicles, i);
+        if (customers[i].GetVehicleId() == -1) {
+            MoveCustomer_Helper(customers, vehicles, i);
+        }
     }
-    
 
     return ScoreSolution(customers, vehicles, warehouse);
 }
