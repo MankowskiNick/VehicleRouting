@@ -14,7 +14,7 @@
 #define START_TEMP_SCALAR 30000
 #define ROUTE_ANNEALING_SCALAR 1000
 #define MAX_ANNEALING_TIME 600
-#define GREEDY_SOLUTION 1
+#define GREEDY_SOLUTION 0
 #define TEMP_MIN 1
 // Insert item into a vector at a given position
 template<typename T>
