@@ -10,8 +10,11 @@
 #include "customer.h"
 #include "vehicle.h"
 
-#define GREEDY_TIME_MAX 6
-#define START_TEMP_SCALAR 10000
+#define GREEDY_TIME_MAX 60
+#define START_TEMP_SCALAR 30000
+#define ROUTE_ANNEALING_SCALAR 1000
+#define MAX_ANNEALING_TIME 600
+#define GREEDY_SOLUTION 0
 #define TEMP_MIN 1
 // Insert item into a vector at a given position
 template<typename T>
@@ -198,82 +201,71 @@ void MoveCustomer(std::vector<Customer>& customers, std::vector<Vehicle>& vehicl
     MoveCustomer_Helper(customers, vehicles, cust_id);
 }
 
-double GetGreedySolution(std::vector<Customer>& customers, std::vector<Vehicle>& vehicles, struct Warehouse& warehouse) {
-    /*
-    if (GREEDY_SOLUTION == 0) {
-        for (int i = 0; i < customers.size(); i++) {
-            for (int j = 0; j < vehicles.size(); j++) {
+double GetGreedySolution(std::vector<Customer>& customers, std::vector<Vehicle>& vehicles, struct Warehouse& warehouse) {   
+   if (GREEDY_SOLUTION == 0) {
+    
+    time_t start_time = time(NULL);
+        for (int i = 0; i < customers.size() && time(NULL) - start_time < GREEDY_TIME_MAX; i++) {
+            for (int j = 0; j < vehicles.size() && time(NULL) - start_time < GREEDY_TIME_MAX; j++) {
                 if (vehicles[j].AssignCustomer(customers[i]))
                     break;
             }
         }
-    }
-    else if (GREEDY_SOLUTION == 1) {
-        for (int i = 0; i < vehicles.size(); i++) {
-            for (int j = 0; j < customers.size(); j++) {
-                if (vehicles[i].AssignCustomer(customers[j]))
-                    break;
-            }
-        }
-    }
-    */
-    
-    /*
-    time_t start_time = time(NULL);
-    for (int i = 0; i < customers.size() && time(NULL) - start_time < GREEDY_TIME_MAX; i++) {
-        for (int j = 0; j < vehicles.size() && time(NULL) - start_time < GREEDY_TIME_MAX; j++) {
-            if (vehicles[j].AssignCustomer(customers[i]))
-                break;
-        }
-    }
-    if (time(NULL) - start_time > GREEDY_TIME_MAX) {
-        start_time = time(NULL);
-        for (int i = 0; i < vehicles.size(); i++) {
-            for (int j = 0; j < customers.size(); j++) {
-                if (vehicles[i].AssignCustomer(customers[j]))
-                    break;
-            }
-        }
-    }
-    */
-    
-    //if (time(NULL) - start_time > GREEDY_TIME_MAX) {
-        std::vector<int> available_ids;
-        for (int i = 0; i < customers.size(); i++ ) {
-            available_ids.push_back( customers[i].Id() );
-        }
-
-        std::vector< std::vector<int> > routes;
-        int cur_vehicle_id = 0;
-        for (int i = 0; i < vehicles.size(); i++) {
-            std::vector<int> ids;
-            std::vector<double> distances_to_ids;
-            for (int j = 1; j < available_ids.size(); j++) {
-                int cust1_id = available_ids[0];
-                int cust2_id = available_ids[j];
-                double cur_dist = GetDist(customers[cust1_id], customers[cust2_id]);
-                ids.push_back(j);
-                distances_to_ids.push_back(cur_dist);
-            }
-
-            QuickSort2<double, int>::Sort(distances_to_ids, ids);
-
-            vehicles[i].AssignCustomer(customers[available_ids[0]]);
-            RemoveFromVector(available_ids, available_ids[0]);
-            for (int j = 0; j < ids.size(); j++) {
-                int cust_id = ids[j];
-                if (vehicles[i].AssignCustomer(customers[cust_id])) {
-                    RemoveFromVector(available_ids, cust_id);
+        if (time(NULL) - start_time > GREEDY_TIME_MAX) {
+            start_time = time(NULL);
+            for (int i = 0; i < vehicles.size(); i++) {
+                for (int j = 0; j < customers.size(); j++) {
+                    if (vehicles[i].AssignCustomer(customers[j]))
+                        break;
                 }
             }
         }
-    //}
+        
+        if (time(NULL) - start_time > GREEDY_TIME_MAX) {
+            std::vector<int> available_ids;
+            for (int i = 0; i < customers.size(); i++ ) {
+                available_ids.push_back( customers[i].Id() );
+            }
 
-    for (int i = 0; i < customers.size(); i++) {
-        if (customers[i].GetVehicleId() == -1) {
+            std::vector< std::vector<int> > routes;
+            int cur_vehicle_id = 0;
+            for (int i = 0; i < vehicles.size(); i++) {
+                std::vector<int> ids;
+                std::vector<double> distances_to_ids;
+                for (int j = 1; j < available_ids.size(); j++) {
+                    int cust1_id = available_ids[0];
+                    int cust2_id = available_ids[j];
+                    double cur_dist = GetDist(customers[cust1_id], customers[cust2_id]);
+                    ids.push_back(j);
+                    distances_to_ids.push_back(cur_dist);
+                }
+
+                QuickSort2<double, int>::Sort(distances_to_ids, ids);
+
+                vehicles[i].AssignCustomer(customers[available_ids[0]]);
+                for (int j = 0; j < ids.size(); j++) {
+                    int cust_id = ids[j];
+                    if (vehicles[i].AssignCustomer(customers[cust_id])) {
+                        RemoveFromVector(available_ids, cust_id);
+                    }
+                }
+                RemoveFromVector(available_ids, available_ids[0]);
+            }
+
+            for (int i = 0; i < available_ids.size(); i++) {
+                int vehicle_id = rand() % vehicles.size();
+                MoveCustomer_Helper(customers, vehicles, available_ids[i]);
+            }
+        }
+    }
+    
+    if (GREEDY_SOLUTION == 1) {
+        // fix for 22_6_1, 26_8_1, 31_9_1, 41_14_1, 76_9_1
+        for (int i = 0; i < customers.size(); i++) {
             MoveCustomer_Helper(customers, vehicles, i);
         }
     }
+    
 
     return ScoreSolution(customers, vehicles, warehouse);
 }
@@ -336,7 +328,8 @@ double Anneal(std::vector<Customer>& customers, std::vector<Vehicle>& vehicles, 
 
         // Make a random change
         // Relocate the specified number of cities in the order(in the vector, obviously)
-        for (int i = 0; i < num_changes; i++) {
+        time_t start_time = time(NULL);
+        for (int i = 0; i < num_changes && time(NULL) - start_time < MAX_ANNEALING_TIME; i++) {
             change_func(annealing_customers, annealing_vehicles);
         }
 
@@ -362,7 +355,7 @@ double AnnealRouteOrder(std::vector<Customer>& customers, struct Warehouse& ware
 
     // Simulated Annealing
     // Initialize temperature
-    double initial_temp = (START_TEMP_SCALAR * START_TEMP_SCALAR) / double(customers.size());
+    double initial_temp = (ROUTE_ANNEALING_SCALAR * ROUTE_ANNEALING_SCALAR) / double(customers.size());
     double temp = double(initial_temp);
     
     // Start simulated annealing
